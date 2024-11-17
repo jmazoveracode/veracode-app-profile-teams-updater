@@ -1,157 +1,117 @@
 
 # Veracode Application Profile Bulk Team Updater
 
-This project provides a Python-based utility to interact with the Veracode API for managing application profiles. 
-The script fetches application profiles from a CSV file, verifies if a team GUID update is needed, and performs the update in bulk.
+This repository contains tools for interacting with the Veracode Application Profiles API to manage and update team assignments in bulk. The two main scripts are:
 
-## Features
-
-1. **Bulk Team GUID Update**:
-   - Reads application profiles from a CSV file.
-   - Verifies if the team GUID requires updating.
-   - Updates only those profiles where a change is needed.
-
-2. **Error Handling and Debugging**:
-   - Displays API responses for debugging.
-   - Stops execution upon critical errors while providing detailed feedback.
-
----
+1. **fetch_applications.py**: Fetches application profiles and generates a CSV containing the application details.
+2. **update_app_profiles_teams.py**: Updates the team GUID for the application profiles listed in a provided CSV file.
 
 ## Prerequisites
 
-### Python Environment
-- Ensure Python 3.10.15+ is installed.
-- Install `virtualenv` (optional, but recommended):
-  ```bash
-  pip install virtualenv
-  ```
-
-### Veracode API Credentials
-- Set up Veracode API credentials as environment variables. Refer to [Veracode Documentation](https://docs.veracode.com/r/c_api_credentials3#create-an-api-credentials-file-on-windows) for details.
-
----
+- Python 3.10.15
+- Conda (preferred for environment management)
+- Veracode API credentials configured using the `veracode-api-signing` plugin.
 
 ## Installation
 
-### Clone the Repository
-```bash
-git clone <repository_url>
-cd <repository_directory>
-```
+### Using Conda (Preferred)
 
-### Set Up Virtual Environment
-```bash
-python -m venv veracode-env
-source veracode-env/bin/activate  # On Windows: veracode-env\Scripts\activate
-```
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/jmazoveracode/veracode-app-profile-teams-updater.git
+    cd veracode-app-profile-teams-updater
+    ```
 
-### Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+2. Create and activate a Conda environment:
+    ```bash
+    conda create --name veracode-env python=3.10.15 -y
+    conda activate veracode-env
+    ```
 
----
+3. Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+### Using Virtualenv (Alternative)
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/jmazoveracode/veracode-app-profile-teams-updater.git
+    cd veracode-app-profile-teams-updater
+    ```
+
+2. Create and activate a virtual environment:
+    ```bash
+    python3.10 -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
 ## Usage
 
-### Script: Veracode Application Profile Bulk Team Updater
+### General Workflow
 
-#### Description
-Updates the team GUID of application profiles listed in a CSV file.
+1. **Run `fetch_applications.py` to generate `applications.csv`**:
+    - Ensure your Veracode API credentials are configured correctly.
+    - Execute the script to fetch application profiles:
+        ```bash
+        python fetch_applications.py
+        ```
+    - This will generate an `applications.csv` file containing application details.
 
-#### Command-Line Arguments
-- `--input`: Path to the input CSV file containing app profile details.
-- `--team_guid`: The new team GUID to assign.
+2. **Prepare the CSV for team updates**:
+    - Open the `applications.csv` file and review the entries.
+    - Identify and store the `Team GUID` you wish to add to the application profiles.
+    - Remove any applications you do not wish to update from the CSV.
+    - Ensure the CSV only contains rows for applications that need updates.
 
-#### Example
-```bash
-python update_app_profiles_teams.py --input applications_original.csv --team_guid 67a0dea8-cb2b-49d1-b7df-e5dbf52291cd
-```
+3. **Run `update_app_profiles_teams.py`**:
+    - Provide the input CSV file and the new `Team GUID` as arguments:
+        ```bash
+        python update_app_profiles_teams.py --input applications.csv --team_guid <NEW_TEAM_GUID>
+        ```
 
-#### Workflow
-1. **Input Validation**:
-   - Ensures the provided CSV file is valid and readable.
-2. **Profile Fetching**:
-   - Verifies if the team GUID in the profile matches the one provided.
-3. **Profile Update**:
-   - Makes API requests to update the team GUID for applicable profiles.
-4. **Error Reporting**:
-   - Stops execution if critical errors are encountered.
+### Example
 
-#### Output
-- Logs actions and API responses to the console.
-- Provides clear feedback on whether updates succeeded or failed.
+To fetch applications and update their team GUID:
 
----
+1. Fetch applications:
+    ```bash
+    python fetch_applications.py
+    ```
+
+2. Edit the generated `applications.csv` file to include only applications you want to update.
+
+3. Update the applications:
+    ```bash
+    python update_app_profiles_teams.py --input applications.csv --team_guid 67a0dea8-cb2b-49d1-b7df-e5dbf52291cd
+    ```
 
 ## File Structure
 
 ```
-project/
-│
-├── update_app_profiles_teams.py # Script for bulk team GUID updates
-├── requirements.txt            # Required dependencies
-├── applications_original.csv   # Example input CSV file
-└── README.md                   # Documentation
+veracode-app-profile-teams-updater/
+├── fetch_applications.py          # Script to fetch application profiles and generate CSV
+├── update_app_profiles_teams.py   # Script to update team GUIDs in application profiles
+├── requirements.txt               # Python dependencies
+├── README.md                      # Documentation
 ```
 
----
+## Notes
 
-## Troubleshooting
-
-### Common Issues
-- **HTTP 400 Bad Request**: Ensure the provided GUIDs and payload data are valid.
-- **Authentication Errors**: Confirm Veracode API credentials are correctly configured.
-
-### Debugging
-Use verbose logging to investigate API responses:
-```bash
-python update_app_profiles_teams.py --input <input_csv> --team_guid <new_team_guid> --verbose
-```
-
----
-
-
-## Alternative Setup Using Conda
-
-If you prefer to use Conda for managing your environment, follow these instructions:
-
-1. **Install Conda**: Make sure you have Conda installed. You can download it from [Anaconda](https://www.anaconda.com/products/distribution) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
-
-2. **Create a New Environment**: Create a new environment with Python 3.10.15:
-
-   ```bash
-   conda create --name veracode-env python=3.10.15
-   ```
-
-3. **Activate the Environment**:
-
-   ```bash
-   conda activate veracode-env
-   ```
-
-4. **Install Dependencies**: Use the `requirements.txt` file to install the necessary dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-5. **Verify Installation**: Ensure all dependencies are installed correctly:
-
-   ```bash
-   python -m pip check
-   ```
-
-6. **Run the Scripts**: Once the environment is set up, you can run the provided scripts as described in the earlier sections.
-
-Note: If you need to switch back to your base environment or another Conda environment, you can deactivate the current one:
-
-```bash
-conda deactivate
-```
-
----
+- Ensure your Veracode API credentials are configured in your environment for both scripts to function.
+- Always review the generated `applications.csv` file before running `update_app_profiles_teams.py`.
+- If the `update_app_profiles_teams.py` script encounters errors, the execution will stop, and a detailed error message will be displayed for debugging.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Support
+
+If you encounter issues, please open an issue in the repository or contact the maintainers.
