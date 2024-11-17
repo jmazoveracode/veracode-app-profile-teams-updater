@@ -20,14 +20,14 @@ The script fetches application profiles from a CSV file, verifies if a team GUID
 ## Prerequisites
 
 ### Python Environment
-- Ensure Python 3.8+ is installed.
+- Ensure Python 3.10.15+ is installed.
 - Install `virtualenv` (optional, but recommended):
   ```bash
   pip install virtualenv
   ```
 
 ### Veracode API Credentials
-- Set up Veracode API credentials as environment variables. Refer to [Veracode Documentation](https://docs.veracode.com/) for details.
+- Set up Veracode API credentials as environment variables. Refer to [Veracode Documentation](https://docs.veracode.com/r/c_api_credentials3#create-an-api-credentials-file-on-windows) for details.
 
 ---
 
@@ -111,8 +111,47 @@ python update_app_profiles_teams.py --input <input_csv> --team_guid <new_team_gu
 
 ---
 
+
+## Alternative Setup Using Conda
+
+If you prefer to use Conda for managing your environment, follow these instructions:
+
+1. **Install Conda**: Make sure you have Conda installed. You can download it from [Anaconda](https://www.anaconda.com/products/distribution) or [Miniconda](https://docs.conda.io/en/latest/miniconda.html).
+
+2. **Create a New Environment**: Create a new environment with Python 3.10.15:
+
+   ```bash
+   conda create --name veracode-env python=3.10.15
+   ```
+
+3. **Activate the Environment**:
+
+   ```bash
+   conda activate veracode-env
+   ```
+
+4. **Install Dependencies**: Use the `requirements.txt` file to install the necessary dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. **Verify Installation**: Ensure all dependencies are installed correctly:
+
+   ```bash
+   python -m pip check
+   ```
+
+6. **Run the Scripts**: Once the environment is set up, you can run the provided scripts as described in the earlier sections.
+
+Note: If you need to switch back to your base environment or another Conda environment, you can deactivate the current one:
+
+```bash
+conda deactivate
+```
+
+---
+
 ## License
 
 This project is licensed under the MIT License.
-
----
