@@ -1,0 +1,4 @@
+requests==2.31.0
+urllib3==2.2.2
+veracode-api-signing==22.3.0
+httpie==3.2.3
